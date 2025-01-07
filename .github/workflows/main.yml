@@ -47,19 +47,23 @@ jobs:
       with:
         terraform_version: '1.1.0'  # Specify the Terraform version you need
 
-    # Step 6: Terraform Init (initialize the configuration)
+    # Step 6: Change to the directory where Terraform configuration files are located (if applicable)
+    - name: Change directory to terraform/
+      run: cd terraform
+
+    # Step 7: Terraform Init (initialize the configuration)
     - name: Terraform Init
       run: terraform init
 
-    # Step 7: Terraform Plan (optional: see the changes Terraform will make)
+    # Step 8: Terraform Plan (optional: see the changes Terraform will make)
     - name: Terraform Plan
       run: terraform plan
 
-    # Step 8: Terraform Apply (apply the infrastructure changes)
+    # Step 9: Terraform Apply (apply the infrastructure changes)
     - name: Terraform Apply
       run: terraform apply -auto-approve
 
-    # Step 9: Verify deployment (optional - check if your EC2 is up and Flask app is running)
+    # Step 10: Verify deployment (optional - check if your EC2 is up and Flask app is running)
     - name: Verify Deployment
       run: |
         curl -I http://18.208.169.195:5000  
