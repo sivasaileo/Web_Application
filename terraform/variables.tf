@@ -5,3 +5,8 @@ variable "aws_region" {
 variable "instance_type" {
   default = "t2.micro"
 }
+
+variable "private_key" {
+  description = "Path to the private key file"
+  type        = string
+}

@@ -47,22 +47,26 @@ jobs:
       with:
         terraform_version: '1.1.0'  # Specify the Terraform version you need
 
-    # Step 6: Terraform Init (initialize the configuration)
+    # Step 6: Set the private key for Terraform (from GitHub Secrets)
+    - name: Set up private key for Terraform
+      run: echo "private_key=${{ secrets.AWS_PRIVATE_KEY }}" >> $GITHUB_ENV
+
+    # Step 7: Terraform Init (initialize the configuration)
     - name: Terraform Init
       run: terraform init
       working-directory: terraform  # Ensure you're in the correct directory
 
-    # Step 7: Terraform Plan (optional: see the changes Terraform will make)
+    # Step 8: Terraform Plan (optional: see the changes Terraform will make)
     - name: Terraform Plan
       run: terraform plan
       working-directory: terraform  # Ensure you're in the correct directory
 
-    # Step 8: Terraform Apply (apply the infrastructure changes)
+    # Step 9: Terraform Apply (apply the infrastructure changes)
     - name: Terraform Apply
       run: terraform apply -auto-approve
       working-directory: terraform  # Ensure you're in the correct directory
 
-    # Step 9: Verify deployment (optional - check if your EC2 is up and Flask app is running)
+    # Step 10: Verify deployment (optional - check if your EC2 is up and Flask app is running)
     - name: Verify Deployment
       run: |
         curl -I http://18.208.169.195:5000   # Replace with your EC2 instance's public IP

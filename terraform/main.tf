@@ -1,3 +1,5 @@
+
+
 provider "aws" {
   region = "us-east-1"  # Ensure the region matches your AWS setup
 }
@@ -48,7 +50,7 @@ resource "aws_instance" "flask_app" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("~/.ssh/my-key")  # Update this with the path to your private key
+      private_key = var.private_key  # Reference the private key from a variable
       host        = self.public_ip
     }
 
