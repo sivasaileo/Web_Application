@@ -9,4 +9,5 @@ variable "instance_type" {
 variable "private_key" {
   description = "Path to the private key file"
   type        = string
+  default     = "~/.ssh/my-key"
 }

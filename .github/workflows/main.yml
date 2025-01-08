@@ -48,12 +48,20 @@ jobs:
         terraform_version: '1.1.0'  # Specify the Terraform version you need
 
     # Step 6: Set the private key for Terraform (from GitHub Secrets)
+    
+    
+    - name: Verify private key
+      run: |
+        if [ -f ~/.ssh/my-key ]; then
+          echo "Private key exists."
+        else
+          echo "Private key missing!" && exit 1
+          fi
     - name: Configure private key for Terraform
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.AWS_PRIVATE_KEY}}" > ~/.ssh/my-key
         chmod 600 ~/.ssh/my-key
-
     # Step 7: Terraform Init (initialize the configuration)
     - name: Terraform Init
       run: terraform init
