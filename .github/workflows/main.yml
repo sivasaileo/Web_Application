@@ -67,9 +67,9 @@ jobs:
       working-directory: terraform
 
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -var "private_key=$(cat ~/.ssh/my-key)"
       working-directory: terraform 
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve
+      run: terraform apply -var "private_key=$(cat ~/.ssh/my-key)" -auto-approve
       working-directory: terraform 
