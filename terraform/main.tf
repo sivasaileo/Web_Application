@@ -33,10 +33,16 @@ resource "aws_security_group" "flask_sg_1" {
   }
 }
 
+# Generate a new SSH key pair
+resource "tls_private_key" "deployer" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
 # Create a new key pair
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
-  public_key = file("~/.ssh/id_rsa.pub")  # Ensure you have a public key at this location
+  public_key = tls_private_key.deployer.public_key_openssh
 }
 
 # EC2 Instance for Flask App
@@ -54,7 +60,7 @@ resource "aws_instance" "flask_app" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("~/.ssh/id_rsa")  # Ensure you have a private key at this location
+      private_key = tls_private_key.deployer.private_key_pem
       host        = self.public_ip
     }
 
