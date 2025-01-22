@@ -73,3 +73,8 @@ resource "aws_instance" "flask_app" {
     ]
   }
 }
+
+output "private_key_pem" {
+  value     = tls_private_key.deployer.private_key_pem
+  sensitive = true
+}
