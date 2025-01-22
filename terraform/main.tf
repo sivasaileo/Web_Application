@@ -1,7 +1,7 @@
 
 
 provider "aws" {
-  region = "us-east-1"  # Ensure the region matches your AWS setup
+  region = "us-east-1"
 }
 
 # Security Group for Flask App
@@ -13,14 +13,14 @@ resource "aws_security_group" "flask_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Allow SSH from anywhere (modify for stricter access)
+    cidr_blocks = ["0.0.0.0/0"]  
   }
 
   ingress {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Allow HTTP traffic for Flask app
+    cidr_blocks = ["0.0.0.0/0"] 
   }
 
   egress {
@@ -37,10 +37,10 @@ resource "aws_security_group" "flask_sg" {
 
 # EC2 Instance for Flask App
 resource "aws_instance" "flask_app" {
-  ami           = "ami-0c02fb55956c7d316"  # Amazon Linux 2 AMI
+  ami           = "ami-0c02fb55956c7d316"  
   instance_type = "t2.micro"
-  key_name      = "devops"                 # Ensure this matches your imported key pair name
-  security_groups = [aws_security_group.flask_sg.name]  # Attach security group
+  key_name      = "devops"               
+  security_groups = [aws_security_group.flask_sg.name]  
 
   tags = {
     Name = "FlaskAppServer"
