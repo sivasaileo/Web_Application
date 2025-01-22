@@ -1,5 +1,3 @@
-
-
 provider "aws" {
   region = "us-east-1"
 }
@@ -35,11 +33,17 @@ resource "aws_security_group" "flask_sg_1" {
   }
 }
 
+# Create a new key pair
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = file("~/.ssh/id_rsa.pub")  # Ensure you have a public key at this location
+}
+
 # EC2 Instance for Flask App
 resource "aws_instance" "flask_app" {
   ami           = "ami-0c02fb55956c7d316"  
   instance_type = "t2.micro"
-  key_name      = "devops"               
+  key_name      = aws_key_pair.deployer.key_name               
   security_groups = [aws_security_group.flask_sg_1.name]  
 
   tags = {
@@ -50,7 +54,7 @@ resource "aws_instance" "flask_app" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = var.private_key  
+      private_key = file("~/.ssh/id_rsa")  # Ensure you have a private key at this location
       host        = self.public_ip
     }
 
