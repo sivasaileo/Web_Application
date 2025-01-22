@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 # Security Group for Flask App
-resource "aws_security_group" "flask_sg" {
+resource "aws_security_group" "flask_sg_1" {
   name        = "flask-app-sg"
   description = "Allow SSH and HTTP access"
 
