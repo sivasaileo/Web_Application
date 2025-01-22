@@ -6,7 +6,7 @@ provider "aws" {
 
 # Security Group for Flask App
 resource "aws_security_group" "flask_sg_1" {
-  name        = "flask-app-sg"
+  name        = "flask-app-sg_1"
   description = "Allow SSH and HTTP access"
 
   ingress {
@@ -31,7 +31,7 @@ resource "aws_security_group" "flask_sg_1" {
   }
 
   tags = {
-    Name = "FlaskAppSecurityGroup"
+    Name = "FlaskAppSecurityGroup1"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_instance" "flask_app" {
   ami           = "ami-0c02fb55956c7d316"  
   instance_type = "t2.micro"
   key_name      = "devops"               
-  security_groups = [aws_security_group.flask_sg.name]  
+  security_groups = [aws_security_group.flask_sg_1.name]  
 
   tags = {
     Name = "FlaskAppServer"
