@@ -8,15 +8,16 @@ on:
     branches:
       - '*'
 
-
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout the code
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Step 2: Set up Python and install dependencies (for Flask app)
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -25,8 +26,50 @@ jobs:
     - name: Install dependencies
       run: |
         pip install flask
-        pip install pytest  # Optional, for testing
+        pip install pytest
 
+    # Step 3: Run tests (optional, for Flask app)
     - name: Run tests
       run: |
         pytest || true
+
+    # Step 4: Configure AWS Credentials
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    # Step 5: Use the private key from secrets
+    - name: Create private key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.AWS_PRIVATE_KEY }}" > ~/.ssh/my-key
+        chmod 600 ~/.ssh/my-key
+
+    - name: Verify private key
+      run: |
+        if [ -f ~/.ssh/my-key ]; then
+          echo "Private key exists."
+        else
+          echo "Private key missing!" && exit 1
+        fi
+
+    # Step 6: Set up Terraform
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: '1.1.0'
+
+    - name: Terraform Init
+      run: terraform init
+      working-directory: terraform
+
+    - name: Terraform Plan
+      run: terraform plan -var "private_key=$(cat ~/.ssh/my-key)"
+      working-directory: terraform 
+
+    - name: Terraform Apply
+      run: terraform apply -var "private_key=$(cat ~/.ssh/my-key)" -auto-approve
+      working-directory: terraform 
